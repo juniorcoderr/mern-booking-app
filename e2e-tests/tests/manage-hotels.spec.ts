@@ -91,9 +91,31 @@ test("should display hotels", async ({ page }) => {
   await expect(hotelCard.getByText("2 adults, 4 children")).toBeVisible();
   await expect(hotelCard.getByText("3 Star Rating")).toBeVisible();
   await expect(
-    hotelCard.getByRole("link", { name: "View Details" })
+    hotelCard.getByRole("link", { name: "View Details" }).first()
   ).toBeVisible();
 
   // Step 5: Check the "Add Hotel" link, which is outside the hotel card
   await expect(page.getByRole("link", { name: "Add Hotel" })).toBeVisible();
+});
+
+test("should edit hotel", async ({ page }) => {
+  await page.goto(`${UI_URL}my-hotels`);
+
+  await page.getByRole("link", { name: "View Details" }).first().click();
+
+  await page.waitForSelector('[name="name"]', { state: "attached" });
+  await expect(page.locator('[name="name"]')).toHaveValue(
+    "Test Hotel 1742980816734"
+  );
+  await page.locator('[name="name"]').fill("Test Hotel 1742980816734 UPDATED");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByText("Hotel Saved!")).toBeVisible();
+
+  await page.reload();
+
+  await expect(page.locator('[name="name"]')).toHaveValue(
+    "Test Hotel 1742980816734 UPDATED"
+  );
+  await page.locator('[name="name"]').fill("Test Hotel 1742980816734");
+  await page.getByRole("button", { name: "Save" }).click();
 });
