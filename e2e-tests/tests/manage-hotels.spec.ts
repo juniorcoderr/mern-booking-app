@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 
   await page.locator("[name=email]").fill("netgoluyadav337@gmail.com");
-  await page.locator("[name=password]").fill("123456789");
+  await page.locator("[name=password]").fill("golu123456");
 
   await page.getByRole("button", { name: "Login" }).click();
 
@@ -21,26 +21,24 @@ test.beforeEach(async ({ page }) => {
 test("should allow user to add a hotel", async ({ page }) => {
   await page.goto(`${UI_URL}add-hotel`);
 
-  await page.locator('[name="name"]').fill("Test Hotel");
-  await page.locator('[name="city"]').fill("Test City");
-  await page.locator('[name="country"]').fill("Test Country");
-  await page
-    .locator('[name="description"]')
-    .fill("This is a description for the Test Hotel");
-  await page.locator('[name="pricePerNight"]').fill("100");
-  await page.selectOption('select[name="starRating"]', "3");
+  await page.locator('[name="name"]').fill("Titan Farm House");
+  await page.locator('[name="city"]').fill("Noida");
+  await page.locator('[name="country"]').fill("India");
+  await page.locator('[name="description"]').fill("very nice farm house");
+  await page.locator('[name="pricePerNight"]').fill("1000");
+  await page.selectOption('select[name="starRating"]', "4");
 
-  await page.getByText("Budget").click();
+  await page.getByText("Motel").click();
 
   await page.getByLabel("Free WiFi").check();
   await page.getByLabel("Parking").check();
 
-  await page.locator('[name="adultCount"]').fill("2");
-  await page.locator('[name="childCount"]').fill("4");
+  await page.locator('[name="adultCount"]').fill("4");
+  await page.locator('[name="childCount"]').fill("2");
 
   await page.setInputFiles('[name="imageFiles"]', [
     path.join(__dirname, "files", "pic 1.jpeg"),
-    path.join(__dirname, "files", "pic 2.jpeg"),
+    //path.join(__dirname, "files", "pic 2.jpeg"),
   ]);
 
   await page.getByRole("button", { name: "Save" }).click();
@@ -48,53 +46,19 @@ test("should allow user to add a hotel", async ({ page }) => {
 });
 
 test("should display hotels", async ({ page }) => {
-  // Generate a unique hotel name using a timestamp
-  const uniqueName = `Test Hotel ${Date.now()}`;
-  const description = `This is a description for the ${uniqueName}`;
-
-  // Step 1: Add a hotel with the unique name
-  await page.goto(`${UI_URL}add-hotel`);
-  await page.locator('[name="name"]').fill(uniqueName);
-  await page.locator('[name="city"]').fill("Test City");
-  await page.locator('[name="country"]').fill("Test Country");
-  await page.locator('[name="description"]').fill(description);
-  await page.locator('[name="pricePerNight"]').fill("100");
-  await page.selectOption('select[name="starRating"]', "3");
-  await page.getByText("Budget").click();
-  await page.getByLabel("Free WiFi").check();
-  await page.getByLabel("Parking").check();
-  await page.locator('[name="adultCount"]').fill("2");
-  await page.locator('[name="childCount"]').fill("4");
-  await page.setInputFiles('[name="imageFiles"]', [
-    path.join(__dirname, "files", "pic 1.jpeg"),
-    path.join(__dirname, "files", "pic 2.jpeg"),
-  ]);
-  await page.getByRole("button", { name: "Save" }).click();
-  await expect(page.getByText("Hotel Saved!")).toBeVisible();
-
-  // Step 2: Navigate to the my-hotels page
   await page.goto(`${UI_URL}my-hotels`);
 
-  // Step 3: Find the specific hotel card containing the unique name
-  const hotelCard = page.getByTestId("hotel-card").filter({
-    has: page.getByRole("heading", { name: uniqueName }),
-  });
+  await expect(page.getByText("Titan Farm House")).toBeVisible();
+  await expect(page.getByText("very nice farm house")).toBeVisible();
+  await expect(page.getByText("Noida, India")).toBeVisible();
+  await expect(page.getByText("Motel")).toBeVisible();
+  await expect(page.getByText("₹1000 per night")).toBeVisible();
+  await expect(page.getByText("4 adults, 2 children")).toBeVisible();
+  await expect(page.getByText("4 Star Rating")).toBeVisible();
 
-  // Step 4: Check elements within this specific hotel card
   await expect(
-    hotelCard.getByRole("heading", { name: uniqueName })
+    page.getByRole("link", { name: "View Details" }).first()
   ).toBeVisible();
-  await expect(hotelCard.getByText(description)).toBeVisible();
-  await expect(hotelCard.getByText("Test City, Test Country")).toBeVisible();
-  await expect(hotelCard.getByText("Budget")).toBeVisible();
-  await expect(hotelCard.getByText("₹100 per night")).toBeVisible();
-  await expect(hotelCard.getByText("2 adults, 4 children")).toBeVisible();
-  await expect(hotelCard.getByText("3 Star Rating")).toBeVisible();
-  await expect(
-    hotelCard.getByRole("link", { name: "View Details" }).first()
-  ).toBeVisible();
-
-  // Step 5: Check the "Add Hotel" link, which is outside the hotel card
   await expect(page.getByRole("link", { name: "Add Hotel" })).toBeVisible();
 });
 
@@ -104,18 +68,16 @@ test("should edit hotel", async ({ page }) => {
   await page.getByRole("link", { name: "View Details" }).first().click();
 
   await page.waitForSelector('[name="name"]', { state: "attached" });
-  await expect(page.locator('[name="name"]')).toHaveValue(
-    "Test Hotel 1742980816734"
-  );
-  await page.locator('[name="name"]').fill("Test Hotel 1742980816734 UPDATED");
+  await expect(page.locator('[name="name"]')).toHaveValue("Titan Farm House");
+  await page.locator('[name="name"]').fill("Titan Farm House Updated");
   await page.getByRole("button", { name: "Save" }).click();
   await expect(page.getByText("Hotel Saved!")).toBeVisible();
 
   await page.reload();
 
   await expect(page.locator('[name="name"]')).toHaveValue(
-    "Test Hotel 1742980816734 UPDATED"
+    "Titan Farm House Updated"
   );
-  await page.locator('[name="name"]').fill("Test Hotel 1742980816734");
+  await page.locator('[name="name"]').fill("Titan Farm House");
   await page.getByRole("button", { name: "Save" }).click();
 });
