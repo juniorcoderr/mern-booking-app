@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export type RegisterFormData = {
   firstName: string;
@@ -10,19 +11,30 @@ export type RegisterFormData = {
   email: string;
   password: string;
   confirmPassword: string;
+  role: "admin" | "customer";
 };
 
 const Register = () => {
   const navigate = useNavigate();
   const { showToast } = useAppContext();
   const queryClient = useQueryClient();
+  const [role, setRole] = useState<"admin" | "customer">("customer");
 
   const {
     register,
     watch,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterFormData>();
+  } = useForm<RegisterFormData>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      role: "customer",
+    },
+  });
 
   const mutation = useMutation({
     mutationFn: apiClient.register,
@@ -37,7 +49,7 @@ const Register = () => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    mutation.mutate(data);
+    mutation.mutate({ ...data, role });
   });
 
   return (
@@ -112,6 +124,31 @@ const Register = () => {
           <span className="text-red-500">{errors.confirmPassword.message}</span>
         )}
       </label>
+      <div className="flex flex-col gap-2">
+        <label className="text-gray-700 text-sm font-bold">Select Role</label>
+        <div className="flex gap-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="customer"
+              checked={role === "customer"}
+              onChange={(e) => setRole(e.target.value as "admin" | "customer")}
+              className="mr-2"
+            />
+            Customer
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="admin"
+              checked={role === "admin"}
+              onChange={(e) => setRole(e.target.value as "admin" | "customer")}
+              className="mr-2"
+            />
+            Hotel Admin
+          </label>
+        </div>
+      </div>
       <span>
         <button
           type="submit"

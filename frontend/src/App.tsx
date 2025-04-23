@@ -16,6 +16,7 @@ import Detail from "./pages/Detail";
 import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
+import AdminBookings from "./pages/AdminBookings";
 
 export default function App() {
   const { isLoggedIn } = useAppContext();
@@ -108,6 +109,15 @@ export default function App() {
             />
           </>
         )}
+
+        <Route
+          path="/admin/bookings"
+          element={
+            <Layout>
+              <AdminBookings />
+            </Layout>
+          }
+        />
 
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

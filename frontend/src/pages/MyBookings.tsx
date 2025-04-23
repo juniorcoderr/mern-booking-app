@@ -7,7 +7,7 @@ const MyBookings = () => {
     queryFn: apiClient.fetchMyBookings,
   });
 
-  if (!hotels || !Array.isArray(hotels) || hotels.length === 0) {
+  if (!hotels || hotels.length === 0) {
     return <span>No bookings found</span>;
   }
 
@@ -17,39 +17,48 @@ const MyBookings = () => {
       {hotels.map((hotel) => (
         <div
           key={hotel._id}
-          className="grid grid-cols-1 lg:grid-cols-[1fr_3fr] border border-slate-300 rounded-lg p-8 gap-5"
+          className="border border-slate-300 rounded-lg p-5 space-y-5"
         >
-          <div className="lg:w-full lg:h-[250px]">
-            <img
-              src={hotel.imageUrls[0]}
-              className="w-full h-full object-cover object-center"
-              alt={hotel.name}
-            />
-          </div>
-          <div className="flex flex-col gap-4 overflow-y-auto max-h-[300px]">
-            <div className="text-2xl font-bold">
-              {hotel.name}
-              <div className="text-xs font-normal">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h2 className="text-xl font-bold">{hotel.name}</h2>
+              <p className="text-sm text-gray-600">
                 {hotel.city}, {hotel.country}
-              </div>
+              </p>
             </div>
-            {hotel.bookings.map((booking, index) => (
-              <div key={index}>
-                <div>
-                  <span className="font-bold mr-2">Dates: </span>
-                  <span>
-                    {new Date(booking.checkIn).toDateString()} -
-                    {new Date(booking.checkOut).toDateString()}
-                  </span>
-                </div>
-                <div>
-                  <span className="font-bold mr-2">Guests:</span>
-                  <span>
-                    {booking.adultCount} adults, {booking.childCount} children
-                  </span>
-                </div>
+            <div className="flex flex-col gap-2">
+              <p>
+                <span className="font-bold">Check-in:</span>{" "}
+                {new Date(hotel.bookings[0].checkIn).toLocaleDateString()}
+              </p>
+              <p>
+                <span className="font-bold">Check-out:</span>{" "}
+                {new Date(hotel.bookings[0].checkOut).toLocaleDateString()}
+              </p>
+              <p>
+                <span className="font-bold">Total Cost:</span> ₹
+                {hotel.bookings[0].totalCost}
+              </p>
+              <div
+                className={`inline-block px-3 py-1 rounded-full text-sm font-semibold ${
+                  hotel.bookings[0].status === "approved"
+                    ? "bg-green-100 text-green-800"
+                    : hotel.bookings[0].status === "rejected"
+                    ? "bg-red-100 text-red-800"
+                    : "bg-yellow-100 text-yellow-800"
+                }`}
+              >
+                Status:{" "}
+                {hotel.bookings[0].status.charAt(0).toUpperCase() +
+                  hotel.bookings[0].status.slice(1)}
               </div>
-            ))}
+              {hotel.bookings[0].status !== "pending" && (
+                <p className="text-sm text-gray-500">
+                  Updated:{" "}
+                  {new Date(hotel.bookings[0].statusUpdatedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       ))}

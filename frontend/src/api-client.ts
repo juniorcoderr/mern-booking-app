@@ -5,6 +5,7 @@ import {
   HotelType,
   PaymentIntentResponse,
   UserType,
+  BookingType,
 } from "../../backend/src/shared/types";
 import { BookingFormData } from "./forms/BookingForm/BookingForm";
 
@@ -244,5 +245,41 @@ export const fetchMyBookings = async (): Promise<HotelType[]> => {
     throw new Error("Unable to fetch bookings");
   }
 
+  return response.json();
+};
+
+export const fetchPendingBookings = async (): Promise<
+  (BookingType & { hotelName: string; hotelId: string })[]
+> => {
+  const response = await fetch(`${API_BASE_URL}/api/admin/bookings/pending`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error("Failed to fetch pending bookings");
+  }
+  return response.json();
+};
+
+export const updateBookingStatus = async ({
+  bookingId,
+  status,
+}: {
+  bookingId: string;
+  status: "approved" | "rejected";
+}) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/admin/bookings/${bookingId}`,
+    {
+      method: "PUT",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ status }),
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to update booking status");
+  }
   return response.json();
 };

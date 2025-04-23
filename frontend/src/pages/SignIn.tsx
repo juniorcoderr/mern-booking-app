@@ -4,10 +4,12 @@ import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export type SignInFormData = {
   email: string;
   password: string;
+  role: "admin" | "customer";
 };
 
 const SignIn = () => {
@@ -15,6 +17,8 @@ const SignIn = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const location = useLocation();
+  const [role, setRole] = useState<"admin" | "customer">("customer");
+
   const {
     register,
     formState: { errors },
@@ -34,7 +38,7 @@ const SignIn = () => {
   });
 
   const onSubmit = handleSubmit((data) => {
-    mutation.mutate(data);
+    mutation.mutate({ ...data, role });
   });
 
   return (
@@ -69,6 +73,31 @@ const SignIn = () => {
           <span className="text-red-500">{errors.password.message}</span>
         )}
       </label>
+      <div className="flex flex-col gap-2">
+        <label className="text-gray-700 text-sm font-bold">Select Role</label>
+        <div className="flex gap-4">
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="customer"
+              checked={role === "customer"}
+              onChange={(e) => setRole(e.target.value as "admin" | "customer")}
+              className="mr-2"
+            />
+            Customer
+          </label>
+          <label className="flex items-center">
+            <input
+              type="radio"
+              value="admin"
+              checked={role === "admin"}
+              onChange={(e) => setRole(e.target.value as "admin" | "customer")}
+              className="mr-2"
+            />
+            Hotel Admin
+          </label>
+        </div>
+      </div>
       <span className="flex items-center justify-between">
         <span className="text-sm">
           Not Registered?{" "}

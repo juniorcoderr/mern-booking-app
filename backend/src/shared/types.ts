@@ -4,6 +4,7 @@ export type UserType = {
   password: string;
   firstName: string;
   lastName: string;
+  role: "admin" | "customer";
 };
 
 export type HotelType = {
@@ -35,6 +36,8 @@ export type BookingType = {
   checkIn: Date;
   checkOut: Date;
   totalCost: number;
+  status: "pending" | "approved" | "rejected";
+  statusUpdatedAt: Date;
 };
 
 export type HotelSearchResponse = {

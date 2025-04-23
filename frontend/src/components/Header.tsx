@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import { useAppContext } from "../contexts/AppContext";
 import SignOutButton from "./SignOutButton";
+import { useQuery } from "@tanstack/react-query";
+import * as apiClient from "../api-client";
+import Notification from "./Notification";
 
 const Header = () => {
   const { isLoggedIn } = useAppContext();
+
+  const { data: currentUser } = useQuery({
+    queryKey: ["fetchCurrentUser"],
+    queryFn: apiClient.fetchCurrentUser,
+    enabled: isLoggedIn,
+  });
 
   return (
     <div className="bg-blue-800 py-6">
@@ -32,6 +41,15 @@ const Header = () => {
               >
                 My Hotels
               </Link>
+              {currentUser?.role === "admin" && (
+                <Link
+                  className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
+                  to="/admin/bookings"
+                >
+                  Admin Dashboard
+                </Link>
+              )}
+              {currentUser?.role === "customer" && <Notification />}
               <SignOutButton />
             </>
           ) : (

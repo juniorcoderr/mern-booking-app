@@ -11,6 +11,13 @@ const bookingSchema = new mongoose.Schema<BookingType>({
   checkOut: { type: Date, required: true },
   userId: { type: String, required: true },
   totalCost: { type: Number, required: true },
+  status: {
+    type: String,
+    required: true,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending",
+  },
+  statusUpdatedAt: { type: Date, default: Date.now },
 });
 
 const hotelSchema = new mongoose.Schema<HotelType>({
