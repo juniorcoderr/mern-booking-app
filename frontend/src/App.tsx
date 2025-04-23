@@ -17,6 +17,8 @@ import Booking from "./pages/Booking";
 import MyBookings from "./pages/MyBookings";
 import Home from "./pages/Home";
 import AdminBookings from "./pages/AdminBookings";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 export default function App() {
   const { isLoggedIn } = useAppContext();
@@ -61,6 +63,22 @@ export default function App() {
           element={
             <Layout>
               <SignIn />
+            </Layout>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <Layout>
+              <ForgotPassword />
+            </Layout>
+          }
+        />
+        <Route
+          path="/reset-password/:token"
+          element={
+            <Layout>
+              <ResetPassword />
             </Layout>
           }
         />

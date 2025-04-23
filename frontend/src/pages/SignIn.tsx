@@ -2,9 +2,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export type SignInFormData = {
   email: string;
@@ -18,11 +18,13 @@ const SignIn = () => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const [role, setRole] = useState<"admin" | "customer">("customer");
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm<SignInFormData>();
 
   const mutation = useMutation<unknown, Error, SignInFormData>({
@@ -58,17 +60,28 @@ const SignIn = () => {
       </label>
       <label className="text-gray-700 text-sm font-bold flex-1">
         Password
-        <input
-          type="password"
-          className="border rounded w-full py-1 px-2 font-normal"
-          {...register("password", {
-            required: "This field is required",
-            minLength: {
-              value: 6,
-              message: "Password must be at least 6 characters long",
-            },
-          })}
-        ></input>
+        <div className="relative">
+          <input
+            type={showPassword ? "text" : "password"}
+            className="border rounded w-full py-1 px-2 font-normal"
+            {...register("password", {
+              required: "This field is required",
+              minLength: {
+                value: 6,
+                message: "Password must be at least 6 characters long",
+              },
+            })}
+          />
+          {watch("password") && (
+            <button
+              type="button"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          )}
+        </div>
         {errors.password && (
           <span className="text-red-500">{errors.password.message}</span>
         )}
@@ -105,11 +118,19 @@ const SignIn = () => {
             Create an account here
           </Link>
         </span>
+        <Link
+          to="/forgot-password"
+          className="text-sm text-blue-600 hover:text-blue-800"
+        >
+          Forgot Password?
+        </Link>
+      </span>
+      <span>
         <button
           type="submit"
           className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl"
         >
-          LogIn
+          Sign In
         </button>
       </span>
     </form>

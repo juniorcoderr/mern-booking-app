@@ -8,6 +8,8 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   role: { type: String, enum: ["admin", "customer"], default: "customer" },
+  resetPasswordToken: { type: String },
+  resetPasswordExpires: { type: Date },
 });
 
 userSchema.pre("save", async function (next) {
@@ -16,6 +18,10 @@ userSchema.pre("save", async function (next) {
   }
   next();
 });
+
+userSchema.methods.comparePassword = async function (enteredPassword: string) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model<UserType>("User", userSchema);
 

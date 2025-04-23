@@ -5,6 +5,9 @@ export type UserType = {
   firstName: string;
   lastName: string;
   role: "admin" | "customer";
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
+  comparePassword: (enteredPassword: string) => Promise<boolean>;
 };
 
 export type HotelType = {

@@ -283,3 +283,45 @@ export const updateBookingStatus = async ({
   }
   return response.json();
 };
+
+export const forgotPassword = async (formData: { email: string }) => {
+  const response = await fetch(`${API_BASE_URL}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+
+  const body = await response.json();
+  if (!response.ok) {
+    throw new Error(body.message);
+  }
+  return body;
+};
+
+export const resetPassword = async (formData: {
+  password: string;
+  confirmPassword: string;
+  token: string;
+}) => {
+  const response = await fetch(
+    `${API_BASE_URL}/api/auth/reset-password/${formData.token}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: formData.password,
+        confirmPassword: formData.confirmPassword,
+      }),
+    }
+  );
+
+  const body = await response.json();
+  if (!response.ok) {
+    throw new Error(body.message);
+  }
+  return body;
+};
