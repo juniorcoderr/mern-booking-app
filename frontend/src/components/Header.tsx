@@ -23,33 +23,39 @@ const Header = () => {
         <span className="flex space-x-2">
           {isLoggedIn ? (
             <>
-              <Link
-                className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
-                to="/my-bookings"
-              >
-                My Bookings
-              </Link>
-              <Link
-                className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
-                to="/add-hotel"
-              >
-                Add Hotels
-              </Link>
-              <Link
-                className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
-                to="/my-hotels"
-              >
-                My Hotels
-              </Link>
-              {currentUser?.role === "admin" && (
-                <Link
-                  className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
-                  to="/admin/bookings"
-                >
-                  Admin Dashboard
-                </Link>
+              {currentUser?.role === "customer" && (
+                <>
+                  <Link
+                    className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
+                    to="/my-bookings"
+                  >
+                    My Bookings
+                  </Link>
+                  <Notification />
+                </>
               )}
-              {currentUser?.role === "customer" && <Notification />}
+              {currentUser?.role === "admin" && (
+                <>
+                  <Link
+                    className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
+                    to="/add-hotel"
+                  >
+                    Add Hotels
+                  </Link>
+                  <Link
+                    className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
+                    to="/my-hotels"
+                  >
+                    My Hotels
+                  </Link>
+                  <Link
+                    className="flex items-center text-white px-3 font-bold hover:bg-blue-600"
+                    to="/admin/bookings"
+                  >
+                    Admin Dashboard
+                  </Link>
+                </>
+              )}
               <SignOutButton />
             </>
           ) : (
