@@ -24,7 +24,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "mongoose": "^8.12.1",
-    "multer": "^2.0.1",
+    "multer": "^2.0.2",
     "nodemailer": "^6.10.1",
     "stripe": "^18.0.0"
   },
